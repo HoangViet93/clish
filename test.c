@@ -77,19 +77,24 @@ int cli_readline(char *linebuf, int len)
 			linebuf[cnt] = '\0';
 			putchar('\r');
 			putchar('\n');
-			return 0;
+			return cnt;
 		}
-		linebuf[cnt] = c;
-		cnt++;
-
 		if (0x08 == c)
 		{
+			if (0 == cnt)
+				continue;
+
 			putchar('\b');
 			putchar(' ');
 			putchar('\b');
+			c = '\0';
+			linebuf[--cnt] = c;
 		}
 		else
+		{
 			putchar(c);
+			linebuf[cnt++] = c;
+		}
 	}
 }
 
@@ -104,7 +109,7 @@ int main(void)
 	{
 #if 1
 		cli_print_prompt("CONFIG");
-		if (0 == cli_readline(buffer, 16))
+		if (cli_readline(buffer, 16))
 		{
 			printf("%s\n", buffer);
 		}
